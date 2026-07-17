@@ -17,9 +17,9 @@ public class Pharmacy {
 
     private String address;
 
-    private Double lat;
+    private Double latitude;
 
-    private Double lng;
+    private Double longitude;
 
     private String phone;
 

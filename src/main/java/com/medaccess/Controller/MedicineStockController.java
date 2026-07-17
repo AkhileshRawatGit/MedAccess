@@ -1,6 +1,7 @@
 package com.medaccess.Controller;
 
 import com.medaccess.Service.MedicineStockService;
+import com.medaccess.dto.Pharmacy.NearbyPharmacyResponse;
 import com.medaccess.dto.Stock.MedicineStockDto;
 import com.medaccess.dto.Stock.MedicineStockGet;
 import com.medaccess.dto.Stock.PharmacyStockDto;
@@ -55,5 +56,15 @@ public class MedicineStockController {
     @DeleteMapping("/delete/{id}")
     public String deleteById(@PathVariable Long id){
         return medicineStockService.deleteStock(id);
+    }
+
+    @GetMapping("/search-nearby")
+    public List<NearbyPharmacyResponse>searchPharmacies(
+            @RequestParam String medicineName,
+            @RequestParam Double lat,
+            @RequestParam Double lng,
+            @RequestParam(defaultValue = "5") Double radius
+    ){
+        return medicineStockService.searchNearbyPharmacies(medicineName,lat,lng,radius);
     }
 }

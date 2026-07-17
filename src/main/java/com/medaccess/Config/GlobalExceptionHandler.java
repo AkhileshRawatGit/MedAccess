@@ -1,11 +1,8 @@
 package com.medaccess.Config;
 
-import com.medaccess.Exception.CartItemNotFoundException;
-import com.medaccess.Exception.CartNotFoundException;
-import com.medaccess.Exception.InvalidQuantityException;
+import com.medaccess.Exception.*;
 import com.medaccess.Exception.OrderException.EmptyCartException;
 import com.medaccess.Exception.OrderException.OrderNotFoundException;
-import com.medaccess.Exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,6 +46,13 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ApiError>handleOrderNotFoundException(OrderNotFoundException exception){
+        ApiError apiError=new ApiError("Resource not found"+exception.getMessage(),HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiError,apiError.getStatus());
+    }
+
+
+    @ExceptionHandler(MedicineNotFoundException.class)
+    public ResponseEntity<ApiError>handleMedicineNotFoundException(MedicineNotFoundException exception){
         ApiError apiError=new ApiError("Resource not found"+exception.getMessage(),HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(apiError,apiError.getStatus());
     }

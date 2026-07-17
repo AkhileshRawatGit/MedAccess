@@ -47,18 +47,20 @@ public class CartService {
 
         //if cart is not exist
         Cart cart=getOrCreateCart(request.getUserId());
-        Optional<CartItem> existing=cart.getCartItemList().stream().filter(i->i.getMedicineId()
-                .equals(request.getMedicineId())).findFirst();
+        Optional<CartItem> existing=cartItemRepo.findByCartIdAndMedicineId(cart.getId(),request.getMedicineId());
 
         if(existing.isPresent()){
             existing.get().setQuantity(existing.get().getQuantity()+request.getQuantity());
         }
         else{
+            Medicine medicine = medicineRepo.findById(request.getMedicineId())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Medicine not found"));
             CartItem cartItem=new CartItem();
             cartItem.setCart(cart);
             cartItem.setQuantity(request.getQuantity());
-            cartItem.setPrice(fetchPrice(request.getMedicineId()));
-            cartItem.setMedicineId(request.getMedicineId());
+            cartItem.setPrice(medicine.getPrice());
+            cartItem.setMedicine(medicine);
             cart.getCartItemList().add(cartItem);
         }
         Cart savedCart=cartRepo.save(cart);

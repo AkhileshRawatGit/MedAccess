@@ -32,7 +32,9 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/cart/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/stock/**").permitAll()
                         .requestMatchers("/api/v1/order/**").permitAll()
+                        .requestMatchers("/api/v1/upload").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
