@@ -56,4 +56,10 @@ public class GlobalExceptionHandler {
         ApiError apiError=new ApiError("Resource not found"+exception.getMessage(),HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(apiError,apiError.getStatus());
     }
+
+    @ExceptionHandler(InvalidFileException.class)
+    public ResponseEntity<ApiError>handleInvalidFileException(InvalidFileException exception){
+        ApiError apiError=new ApiError("Resource not found"+exception.getMessage(),HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiError,apiError.getStatus());
+    }
 }

@@ -1,5 +1,6 @@
 package com.medaccess.entity;
 
+import com.medaccess.Exception.InvalidFileException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,8 @@ public class Medicine {
     private String category;
 
     private BigDecimal price;
+
+    private String imageUrl;
 
     private Boolean requiresPrescription = false;
 

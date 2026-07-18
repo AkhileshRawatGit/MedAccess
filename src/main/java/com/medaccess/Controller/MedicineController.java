@@ -4,7 +4,9 @@ import com.medaccess.Service.MedicineService;
 import com.medaccess.dto.MedicineDto.MedicineDto;
 import lombok.AllArgsConstructor;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,9 +17,12 @@ public class MedicineController {
 
     private final MedicineService medicineService;
 
-    @PostMapping("/add")
-    public MedicineDto create(@RequestBody MedicineDto medicine){
-        return medicineService.create(medicine);
+    @PostMapping(value="/add",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public MedicineDto create(
+            @RequestPart("data") MedicineDto medicine,
+            @RequestPart(value = "image", required = false) MultipartFile image
+    ){
+        return medicineService.create(medicine,image);
     }
 
     @GetMapping("/get")

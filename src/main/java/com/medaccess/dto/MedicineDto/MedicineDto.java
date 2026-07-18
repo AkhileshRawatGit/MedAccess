@@ -21,6 +21,8 @@ public class MedicineDto {
 
     private Double price;
 
+    private String imageUrl;
+
     private String uses;
 
     private String sideEffects;

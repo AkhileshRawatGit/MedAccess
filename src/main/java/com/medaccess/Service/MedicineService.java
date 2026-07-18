@@ -7,6 +7,7 @@ import com.medaccess.entity.Medicine;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,10 +17,15 @@ public class MedicineService {
 
     private final ModelMapper mapper;
     private final MedicineRepo medicineRepo;
+    private final CloudinaryService cloudinaryService;
 
     //create medicine
-    public MedicineDto create(MedicineDto medicine){
+    public MedicineDto create(MedicineDto medicine, MultipartFile image){
         Medicine medicine1=mapper.map(medicine,Medicine.class);
+        if(image!=null && !image.isEmpty()){
+            String imageUrl=cloudinaryService.uploadImage(image,"medicines");
+            medicine1.setImageUrl(imageUrl);
+        }
         Medicine medicine2=medicineRepo.save(medicine1);
         return mapper.map(medicine2, MedicineDto.class);
     }
