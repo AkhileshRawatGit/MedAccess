@@ -3,6 +3,9 @@ package com.medaccess.Config;
 import com.medaccess.Exception.*;
 import com.medaccess.Exception.OrderException.EmptyCartException;
 import com.medaccess.Exception.OrderException.OrderNotFoundException;
+import com.medaccess.Exception.PaymentException.InvalidPaymentSignatureException;
+import com.medaccess.Exception.PaymentException.PaymentFailedException;
+import com.medaccess.Exception.PaymentException.PaymentNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -62,4 +65,20 @@ public class GlobalExceptionHandler {
         ApiError apiError=new ApiError("Resource not found"+exception.getMessage(),HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(apiError,apiError.getStatus());
     }
+
+
+    @ExceptionHandler(PaymentNotFoundException.class)
+    public ResponseEntity<ApiError> handlePaymentNotFound(PaymentNotFoundException ex) {
+        ApiError apiError=new ApiError("Resource not found"+ex.getMessage(),HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiError,apiError.getStatus());    }
+
+    @ExceptionHandler(PaymentFailedException.class)
+    public ResponseEntity<ApiError> handlePaymentFailed(PaymentFailedException ex) {
+        ApiError apiError=new ApiError("Resource not found"+ex.getMessage(),HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiError,apiError.getStatus());    }
+
+    @ExceptionHandler(InvalidPaymentSignatureException.class)
+    public ResponseEntity<ApiError> handleInvalidSignature(InvalidPaymentSignatureException ex) {
+        ApiError apiError=new ApiError("Resource not found"+ex.getMessage(),HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiError,apiError.getStatus());    }
 }

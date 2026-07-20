@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @Setter
 public class MedicineDto {
 
+    private Long id;
+
     private String name;
 
     private String genericName;
@@ -28,5 +30,7 @@ public class MedicineDto {
     private String sideEffects;
 
     private LocalDate expiryDate;
+
+    private Boolean requiresPrescription;
 
 }

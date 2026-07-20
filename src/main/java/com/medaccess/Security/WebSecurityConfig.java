@@ -25,18 +25,17 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sessioncofig->sessioncofig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth->auth
-//                        .requestMatchers(HttpMethod.GET,
-//                                "/api/v1/medicine/**",
-//                                "/api/v1/pharmacy/**",
-//                                "/api/v1/stock/get/medicine/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST,
-//                                "/api/v1/auth/**").permitAll()
-//                        .requestMatchers("/api/v1/cart/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/stock/**").permitAll()
-//                        .requestMatchers("/api/v1/order/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST,"/api/v1/medicine/add").permitAll()
-//                        .anyRequest().authenticated()
-                                .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/medicine/**",
+                                "/api/v1/pharmacy/**",
+                                "/api/v1/stock/get/medicine/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/cart/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/stock/**").permitAll()
+                        .requestMatchers("/api/v1/order/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/medicine/add").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();

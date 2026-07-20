@@ -49,7 +49,7 @@ public class OrderService {
         //order bano
         Order order=new Order();
         order.setUser(user);
-        order.setStatus(Order.OrderStatus.pending);
+        order.setStatus(Order.OrderStatus.PENDING);
         order.setCreatedAt(LocalDateTime.now());
         List<OrderItem> orderItemList=cart.getCartItemList().stream().
             map(cartItem -> {
@@ -57,7 +57,7 @@ public class OrderService {
                 orderItem.setOrder(order);
                 orderItem.setQuantity(cartItem.getQuantity());
                 orderItem.setMedicine(cartItem.getMedicine());
-                orderItem.setPriceAtPurchase(cartItem.getPrice());
+                orderItem.setPriceAtPurchase(cartItem.getMedicine().getPrice());
                 return orderItem;
             })
         .toList();
@@ -72,18 +72,31 @@ public class OrderService {
     }
 
 
+    @Transactional
     public OrderResponse getOrderById(Long orderId){
-        Order order=orderRepo.findById(orderId).orElseThrow(()->new OrderNotFoundException(
-                "order not found with this id"+orderId
-        ));
-        return mapToResponse(order);
+        try {
+            System.out.println("Service Start");
+
+            Order order = orderRepo.findById(orderId)
+                    .orElseThrow(() -> new OrderNotFoundException("Not Found"));
+
+            System.out.println("Order Found");
+
+            return mapToResponse(order);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
+    @Transactional
     public List<OrderResponse> getOrderByUser(Long userId){
         User user=userRepo.findById(userId).orElseThrow(()->new ResourceNotFoundException(
                 "User not found with this id "+userId
         ));
         List<Order> orderList=orderRepo.findByUser(user);
+        System.out.println(orderList);
         return orderList.stream().map(this::mapToResponse).toList();
     }
 
@@ -92,29 +105,36 @@ public class OrderService {
         Order order=orderRepo.findById(orderId).orElseThrow(()->new OrderNotFoundException(
                 "Order not found with this id "+orderId
         ));
-        if(order.getStatus()== Order.OrderStatus.processing){
+        if(order.getStatus()== Order.OrderStatus.PAID){
             throw new IllegalStateException("Processing order cannot be cancelled directly — initiate refund instead");
         }
-        order.setStatus(Order.OrderStatus.cancelled);
+        order.setStatus(Order.OrderStatus.CANCELLED);
         return mapToResponse(orderRepo.save(order));
     }
 
     private OrderResponse mapToResponse(Order order){
+        if (order == null) return null;
         OrderResponse response=new OrderResponse();
         response.setOrderId(order.getId());
-        response.setUserId(order.getUser().getId());
+        response.setUserId(order.getUser() != null ? order.getUser().getId() : null);
         response.setStatus(order.getStatus().name());
         response.setTotalAmount(order.getTotalAmount());
         response.setLocalDateTime(order.getCreatedAt());
-        List<OrderItemResponse> responseList = order.getItems().stream()
+        
+        List<OrderItemResponse> responseList = List.of();
+        if (order.getItems() != null) {
+            responseList = order.getItems().stream()
                 .map(item->{
                     OrderItemResponse orderItemResponse=new OrderItemResponse();
                     orderItemResponse.setId(item.getId());
-                    orderItemResponse.setMedicineId(item.getMedicine().getId());
+                    orderItemResponse.setMedicineId(item.getMedicine() != null ? item.getMedicine().getId() : null);
                     orderItemResponse.setQuantity(item.getQuantity());
-                    orderItemResponse.setSubtotal(item.getPriceAtPurchase().multiply(BigDecimal.valueOf(item.getQuantity())));
+                    orderItemResponse.setPriceAtPurchase(item.getPriceAtPurchase());
+                    orderItemResponse.setSubtotal(item.getPriceAtPurchase() != null && item.getQuantity() != null ? 
+                            item.getPriceAtPurchase().multiply(BigDecimal.valueOf(item.getQuantity())) : BigDecimal.ZERO);
                     return orderItemResponse;
                 }).toList();
+        }
         response.setOrderItemResponseList(responseList);
         return response;
     }

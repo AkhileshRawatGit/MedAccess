@@ -17,7 +17,9 @@ public class CorsConfig {
 
         // Allow frontend origins (add more as needed)
         config.setAllowedOrigins(List.of(
-                "http://localhost:5500",    // VS Code Live Server default
+                "http://localhost:5173",    // Vite default port
+                "http://localhost:5174",    // Vite fallback port
+                "http://localhost:5171",    // VS Code Live Server default
                 "http://127.0.0.1:5500",
                 "http://localhost:3000",    // React/other dev server
                 "http://localhost:4200",    // Angular

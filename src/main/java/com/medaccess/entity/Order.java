@@ -25,7 +25,7 @@ public class Order {
 //    private Pharmacy pharmacy;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status = OrderStatus.pending;
+    private OrderStatus status;
 
 //    @Enumerated(EnumType.STRING)
 //    private DeliveryType deliveryType = DeliveryType.delivery;
@@ -39,6 +39,14 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
 
-    public enum OrderStatus { pending, processing, ready, delivered, cancelled }
+    public enum OrderStatus {
+        PENDING,      // Order create hua, payment abhi baaki hai
+        PAID,         // Payment successful ho gaya
+        FAILED,       // Payment fail ho gaya
+        CONFIRMED,    // Pharmacy ne order confirm kar diya (stock check ho gaya)
+        SHIPPED,      // Order dispatch ho gaya
+        DELIVERED,    // Order deliver ho gaya
+        CANCELLED
+    }
     //public enum DeliveryType { delivery, pickup }
 }

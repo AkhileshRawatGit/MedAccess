@@ -47,7 +47,7 @@ public class CartService {
 
         //if cart is not exist
         Cart cart=getOrCreateCart(request.getUserId());
-        Optional<CartItem> existing=cartItemRepo.findByCartIdAndMedicineId(cart.getId(),request.getMedicineId());
+        Optional<CartItem> existing=cartItemRepo.findByCart_IdAndMedicine_Id(cart.getId(),request.getMedicineId());
 
         if(existing.isPresent()){
             existing.get().setQuantity(existing.get().getQuantity()+request.getQuantity());
@@ -69,8 +69,17 @@ public class CartService {
 
     //get Cart
     public CartResponse getCartResponse(Long id){
-        Cart response=cartRepo.findByUserId(id).orElseThrow(()->new CartNotFoundException("cart not found with this userId "+id));
-        return mapCartToResponse(response);
+        User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        return cartRepo.findByUserId(id)
+                .map(this::mapCartToResponse)
+                .orElseGet(() -> {
+                    // User has no cart yet — return an empty CartResponse
+                    CartResponse empty = new CartResponse();
+                    empty.setUserId(id);
+                    empty.setItems(List.of());
+                    empty.setTotalAmount(BigDecimal.ZERO);
+                    return empty;
+                });
     }
 
     //update the cart Item quantity
@@ -112,10 +121,15 @@ public class CartService {
     // ---------- MAPPER HELPER ----------
     private CartResponse mapCartToResponse(Cart cart) {
         CartResponse response = mapper.map(cart, CartResponse.class);
+        // Explicitly set fields ModelMapper can't auto-map from relations/renamed fields
+        response.setCartId(cart.getId());
+        response.setUserId(cart.getUser().getId());
 
         List<CartItemResponse> itemResponses = cart.getCartItemList().stream()
                 .map(item -> {
                     CartItemResponse dto = mapper.map(item, CartItemResponse.class);
+                    // Explicitly set medicineId — ModelMapper cannot auto-map @ManyToOne → Long
+                    dto.setMedicineId(item.getMedicine().getId());
                     dto.setSubtotal(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
                     return dto;
                 })

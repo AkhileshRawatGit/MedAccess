@@ -26,13 +26,13 @@ public class OrderController {
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponse>getOrder(@PathVariable Long orderId){
         OrderResponse response=orderService.getOrderById(orderId);
-        return ResponseEntity.status(HttpStatus.FOUND).body(response);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<OrderResponse>>getOrderByUser(@PathVariable Long userId){
         List<OrderResponse> responseList=orderService.getOrderByUser(userId);
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseList);
+        return ResponseEntity.ok(responseList);
     }
 
     @PutMapping("/cancel/{orderId}")

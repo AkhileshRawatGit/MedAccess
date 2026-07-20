@@ -8,6 +8,5 @@ import lombok.*;
 @Getter
 @Setter
 public class OrderRequest {
-
     private Long userId;
 }
